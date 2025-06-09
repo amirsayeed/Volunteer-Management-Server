@@ -11,7 +11,8 @@ app.use(express.json());
 
 const {
     MongoClient,
-    ServerApiVersion
+    ServerApiVersion,
+    ObjectId
 } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tnmpmcr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -36,6 +37,15 @@ async function run() {
 
         app.get('/addVolunteerNeedPost', async (req, res) => {
             const result = await volunteersNeedCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/addVolunteerNeedPost/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id)
+            };
+            const result = await volunteersNeedCollection.findOne(query);
             res.send(result);
         })
 
