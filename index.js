@@ -34,6 +34,11 @@ async function run() {
         // });
         const volunteersNeedCollection = client.db("volunteerNeed_db").collection("volunteers");
 
+        app.get('/addVolunteerNeedPost', async (req, res) => {
+            const result = await volunteersNeedCollection.find().toArray();
+            res.send(result);
+        })
+
         app.post('/addVolunteerNeedPost', async (req, res) => {
             const newVolunteerNeedData = req.body;
             const result = await volunteersNeedCollection.insertOne(newVolunteerNeedData);
