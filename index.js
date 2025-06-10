@@ -34,6 +34,7 @@ async function run() {
         //     ping: 1
         // });
         const volunteersNeedCollection = client.db("volunteerNeed_db").collection("volunteers");
+        const volunteersRequestsCollection = client.db("volunteerNeed_db").collection("requestedVolunteers");
 
         app.get('/addVolunteerNeedPost', async (req, res) => {
             const result = await volunteersNeedCollection.find().toArray();
@@ -52,6 +53,23 @@ async function run() {
         app.post('/addVolunteerNeedPost', async (req, res) => {
             const newVolunteerNeedData = req.body;
             const result = await volunteersNeedCollection.insertOne(newVolunteerNeedData);
+            res.send(result);
+        })
+
+        //req to be a volunteer
+        app.post('/volunteerRequest/:postId', async (req, res) => {
+            const id = req.params.postId;
+            const newVolunteerInfo = req.body;
+            const result = await volunteersRequestsCollection.insertOne(newVolunteerInfo);
+            if (result.acknowledged) {
+                await volunteersNeedCollection.updateOne({
+                    _id: new ObjectId(id)
+                }, {
+                    $inc: {
+                        noOfVolunteers: -1,
+                    },
+                })
+            }
             res.send(result);
         })
 
