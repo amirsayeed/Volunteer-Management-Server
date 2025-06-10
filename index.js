@@ -37,7 +37,22 @@ async function run() {
         const volunteersRequestsCollection = client.db("volunteerNeed_db").collection("requestedVolunteers");
 
         app.get('/addVolunteerNeedPost', async (req, res) => {
-            const result = await volunteersNeedCollection.find().toArray();
+            const {
+                searchParams
+            } = req.query;
+
+            let query = {};
+
+            if (searchParams) {
+                query = {
+                    title: {
+                        $regex: searchParams,
+                        $options: "i"
+                    }
+                };
+            }
+
+            const result = await volunteersNeedCollection.find(query).toArray();
             res.send(result);
         })
 
