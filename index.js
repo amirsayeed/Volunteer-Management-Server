@@ -71,6 +71,15 @@ async function run() {
             res.send(result);
         })
 
+        app.delete('/addVolunteerNeedPost/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id)
+            };
+            const result = await volunteersNeedCollection.deleteOne(query);
+            res.send(result);
+        })
+
         //my volunteer need post
         app.get('/myVolunteerNeedPost', async (req, res) => {
             const email = req.query.email;
