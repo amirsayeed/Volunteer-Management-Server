@@ -80,6 +80,20 @@ async function run() {
             res.send(result);
         })
 
+
+        app.put('/addVolunteerNeedPost/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = {
+                _id: new ObjectId(id)
+            };
+            const updatedData = req.body;
+            const updatedDoc = {
+                $set: updatedData
+            }
+            const result = await volunteersNeedCollection.updateOne(filter, updatedDoc);
+            res.send(result);
+        })
+
         //my volunteer need post
         app.get('/myVolunteerNeedPost', async (req, res) => {
             const email = req.query.email;
