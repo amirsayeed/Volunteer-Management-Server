@@ -104,15 +104,6 @@ async function run() {
             res.send(result);
         })
 
-        //my volunteer request post
-        app.get('/myVolunteerRequests', async (req, res) => {
-            const email = req.query.email;
-            const query = {
-                vemail: email
-            }
-            const result = await volunteersRequestsCollection.find(query).toArray();
-            res.send(result);
-        })
 
         //req to be a volunteer
         app.post('/volunteerRequest/:postId', async (req, res) => {
@@ -131,7 +122,24 @@ async function run() {
             res.send(result);
         })
 
-        //
+        //my volunteer request post
+        app.get('/myVolunteerRequests', async (req, res) => {
+            const email = req.query.email;
+            const query = {
+                vemail: email
+            }
+            const result = await volunteersRequestsCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        app.delete('/myVolunteerRequests/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: new ObjectId(id)
+            };
+            const reqData = await volunteersRequestsCollection.deleteOne(query);
+            res.send(reqData)
+        })
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
