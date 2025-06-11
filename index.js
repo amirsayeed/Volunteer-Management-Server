@@ -134,10 +134,22 @@ async function run() {
 
         app.delete('/myVolunteerRequests/:id', async (req, res) => {
             const id = req.params.id;
+            const {
+                postId
+            } = req.body;
             const query = {
                 _id: new ObjectId(id)
             };
             const reqData = await volunteersRequestsCollection.deleteOne(query);
+            if (reqData.acknowledged) {
+                await volunteersNeedCollection.updateOne({
+                    _id: new ObjectId(postId)
+                }, {
+                    $inc: {
+                        noOfVolunteers: 1
+                    }
+                })
+            }
             res.send(reqData)
         })
 
