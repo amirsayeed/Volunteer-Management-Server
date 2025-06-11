@@ -71,6 +71,16 @@ async function run() {
             res.send(result);
         })
 
+        //my volunteer need post
+        app.get('/myVolunteerNeedPost', async (req, res) => {
+            const email = req.query.email;
+            const query = {
+                oemail: email
+            };
+            const result = await volunteersNeedCollection.find(query).toArray();
+            res.send(result);
+        })
+
         //req to be a volunteer
         app.post('/volunteerRequest/:postId', async (req, res) => {
             const id = req.params.postId;
@@ -87,6 +97,8 @@ async function run() {
             }
             res.send(result);
         })
+
+        //
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
