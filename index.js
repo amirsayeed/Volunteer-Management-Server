@@ -81,6 +81,16 @@ async function run() {
             res.send(result);
         })
 
+        //my volunteer request post
+        app.get('/myVolunteerRequests', async (req, res) => {
+            const email = req.query.email;
+            const query = {
+                vemail: email
+            }
+            const result = await volunteersRequestsCollection.find(query).toArray();
+            res.send(result);
+        })
+
         //req to be a volunteer
         app.post('/volunteerRequest/:postId', async (req, res) => {
             const id = req.params.postId;
