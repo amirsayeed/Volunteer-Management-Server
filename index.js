@@ -94,6 +94,14 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/volunteerNeedsNow', async (req, res) => {
+            const sortField = {
+                "deadline": 1
+            }
+            const result = await volunteersNeedCollection.find().sort(sortField).limit(6).toArray();
+            res.send(result);
+        })
+
         //my volunteer need post
         app.get('/myVolunteerNeedPost', async (req, res) => {
             const email = req.query.email;
