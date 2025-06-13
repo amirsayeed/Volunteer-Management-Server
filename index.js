@@ -1,19 +1,52 @@
 const express = require('express')
 const cors = require('cors');
-require('dotenv').config();
-const app = express();
-const port =
-    process.env.PORT || 5000;
-
-app.use(cors());
-app.use(express.json());
-
-
 const {
     MongoClient,
     ServerApiVersion,
     ObjectId
 } = require('mongodb');
+const app = express();
+const port =
+    process.env.PORT || 5000;
+require('dotenv').config();
+
+
+app.use(cors());
+app.use(express.json());
+
+
+const verifyFbToken = async (req, res, next) => {
+    const authHeader = req.headers?.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).send({
+            message: 'unauthorized access'
+        });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    try {
+        const decoded = await admin.auth().verifyIdToken(token);
+        //console.log('decoded token', decoded);
+        req.decoded = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).send({
+            message: 'unauthorized access'
+        });
+    }
+}
+
+const verifyTokenEmail = (req, res, next) => {
+    if (req.query.email !== req.decoded.email) {
+        return res.status(403).send({
+            message: 'forbidden access'
+        })
+    }
+    next();
+}
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tnmpmcr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 
@@ -24,6 +57,16 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./firebase-admin-service-key.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
 
 async function run() {
     try {
@@ -103,8 +146,9 @@ async function run() {
         })
 
         //my volunteer need post
-        app.get('/myVolunteerNeedPost', async (req, res) => {
+        app.get('/myVolunteerNeedPost', verifyFbToken, verifyTokenEmail, async (req, res) => {
             const email = req.query.email;
+
             const query = {
                 oemail: email
             };
@@ -131,8 +175,9 @@ async function run() {
         })
 
         //my volunteer request post
-        app.get('/myVolunteerRequests', async (req, res) => {
+        app.get('/myVolunteerRequests', verifyFbToken, verifyTokenEmail, async (req, res) => {
             const email = req.query.email;
+
             const query = {
                 vemail: email
             }
@@ -161,7 +206,7 @@ async function run() {
             res.send(reqData)
         })
 
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
 
     }
