@@ -112,7 +112,7 @@ async function run() {
             res.send(result);
         })
 
-        app.post('/addVolunteerNeedPost', async (req, res) => {
+        app.post('/addVolunteerNeedPost', verifyFbToken, async (req, res) => {
             const newVolunteerNeedData = req.body;
             const result = await volunteersNeedCollection.insertOne(newVolunteerNeedData);
             res.send(result);
@@ -128,7 +128,7 @@ async function run() {
         })
 
 
-        app.put('/addVolunteerNeedPost/:id', async (req, res) => {
+        app.put('/addVolunteerNeedPost/:id', verifyFbToken, async (req, res) => {
             const id = req.params.id;
             const filter = {
                 _id: new ObjectId(id)
