@@ -61,10 +61,10 @@ const client = new MongoClient(uri, {
 
 var admin = require("firebase-admin");
 
-const decoded = Buffer.from(process.env.FB_SERVICE_KEY, 'base64').toString('utf8');
-const serviceAccount = JSON.parse(decoded);
+// const decoded = Buffer.from(process.env.FB_SERVICE_KEY, 'base64').toString('utf8');
+// const serviceAccount = JSON.parse(decoded);
 
-// var serviceAccount = require("./firebase-admin-service-key.json");
+var serviceAccount = require("./firebase-admin-service-key.json");
 
 
 admin.initializeApp({
@@ -103,7 +103,7 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/addVolunteerNeedPost/:id', async (req, res) => {
+        app.get('/addVolunteerNeedPost/:id', verifyFbToken, async (req, res) => {
             const id = req.params.id;
             const query = {
                 _id: new ObjectId(id)
