@@ -144,7 +144,7 @@ async function run() {
             const sortField = {
                 "deadline": 1
             }
-            const result = await volunteersNeedCollection.find().sort(sortField).limit(6).toArray();
+            const result = await volunteersNeedCollection.find().sort(sortField).limit(8).toArray();
             res.send(result);
         })
 
